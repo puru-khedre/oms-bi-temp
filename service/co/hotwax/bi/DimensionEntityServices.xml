@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-3.xsd">
-    <service verb="load" type="script" noun="DateDimension" location="component://bi/src/loadDateDimension.groovy">
+    <!--    <service verb="load" type="script" noun="DateDimension" location="component://bi/src/loadDateDimension.groovy">-->
+    <service verb="load" noun="DateDimension">
         <in-parameters>
             <parameter name="fromDate" type="Timestamp" format="yyyy-MM-dd" required="true">
                 <description>From date to generate the date dimension</description>
@@ -9,6 +10,32 @@
                 <description>Thru date to generate the date dimension</description>
             </parameter>
         </in-parameters>
-        
+        <actions>
+            <script >
+                import java.text.SimpleDateFormat
+
+                SimpleDateFormat monthNameFormat = new SimpleDateFormat("MMMM")
+                SimpleDateFormat dayNameFormat = new SimpleDateFormat("EEEE")
+                SimpleDateFormat dayDescriptionFormat = new SimpleDateFormat("MMMM d, yyyy")
+                SimpleDateFormat yearMonthDayFormat = new SimpleDateFormat("yyyy-MM-dd")
+                SimpleDateFormat yearMonthFormat = new SimpleDateFormat("yyyy-MM")
+
+                calendar = Calendar.getInstance()
+                calendar.setTime(fromDate)
+                calendar.set(Calendar.HOUR, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+
+                java.sql.Date currentDate = new java.sql.Date(calendar.getTimeInMillis())
+            </script>
+            <while condition="currentDate.compareTo(thruDate)" >
+                <log message="ok ${currentDate}" level="info"/>
+                <script>
+                    calendar.add(Calendar.DATE, 1)
+                    currentDate = new java.sql.Date(calendar.getTimeInMillis())
+                </script>
+            </while>
+        </actions>
     </service>
 </services>
