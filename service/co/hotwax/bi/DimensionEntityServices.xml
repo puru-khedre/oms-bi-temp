@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-3.xsd">
+    <service verb="load" type="script" noun="DateDimension" location="component://bi/src/loadDateDimension.groovy">
+        <in-parameters>
+            <parameter name="fromDate" type="Timestamp" format="yyyy-MM-dd" required="true">
+                <description>From date to generate the date dimension</description>
+            </parameter>
+            <parameter name="thruDate" type="Timestamp" format="yyyy-MM-dd" required="true">
+                <description>Thru date to generate the date dimension</description>
+            </parameter>
+        </in-parameters>
+        
+    </service>
+</services>
