@@ -36,5 +36,36 @@ under the License.
         <field name="yearAndMonth" type="text-short"><description>Format: YYYY-MM</description></field>
         <field name="weekdayType" type="text-short"/>
     </entity>
+
+    <entity entity-name="ProductDimension" package="bi" group="data_warehouse">
+        <field name="productId" type="id" is-pk="true"/>
+        <field name="productTypeId" type="id"/>
+        <field name="parentTypeId" type="id"/>
+        <field name="internalName" type="text-medium"/>
+        <field name="sku" type="text-short"/>
+        <field name="upca" type="text-short"/>
+        <field name="productName" type="text-medium"/>
+        <field name="brandName" type="text-medium"/>
+        <field name="parentProductId" type="id"/>
+        <field name="parentProductName" type="text-medium"/>
+        <field name="primaryProductCategoryId" type="id"/>
+        <field name="primaryProductCategoryName" type="text-medium"/>
+        <field name="featureColor" type="text-medium"/>
+        <field name="featureSize" type="text-medium"/>
+        <field name="variationType" type="text-short"/>
+    </entity>
+
+    <entity entity-name="FacilityDimension" package="bi" group="data_warehouse">
+        <field name="facilityId" type="id" is-pk="true"/>
+        <field name="facilityName" type="text-medium"/>
+        <field name="facilityTypeId" type="id"/>
+        <field name="parentTypeId" type="id"/>
+        <field name="latitude" type="number-float"/>
+        <field name="longitude" type="number-float"/>
+        <field name="city" type="text-medium"/>
+        <field name="stateProvinceGeoId" type="id"/>
+        <field name="countryGeoId" type="id"/>
+        <field name="postalCode" type="text-short"/>
+    </entity>
 </entities>
 
