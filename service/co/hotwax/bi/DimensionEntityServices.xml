@@ -12,13 +12,14 @@
         </in-parameters>
         <actions>
             <script >
+                <![CDATA[
                 import java.text.SimpleDateFormat
 
-                SimpleDateFormat monthNameFormat = new SimpleDateFormat("MMMM")
-                SimpleDateFormat dayNameFormat = new SimpleDateFormat("EEEE")
-                SimpleDateFormat dayDescriptionFormat = new SimpleDateFormat("MMMM d, yyyy")
-                SimpleDateFormat yearMonthDayFormat = new SimpleDateFormat("yyyy-MM-dd")
-                SimpleDateFormat yearMonthFormat = new SimpleDateFormat("yyyy-MM")
+                SimpleDateFormat monthNameFormat = new SimpleDateFormat("MMMM");
+                SimpleDateFormat dayNameFormat = new SimpleDateFormat("EEEE");
+                SimpleDateFormat dayDescriptionFormat = new SimpleDateFormat("MMMM d, yyyy");
+                SimpleDateFormat yearMonthDayFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat yearMonthFormat = new SimpleDateFormat("yyyy-MM");
 
                 calendar = Calendar.getInstance()
                 calendar.setTime(fromDate)
@@ -27,15 +28,46 @@
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
 
-                java.sql.Date currentDate = new java.sql.Date(calendar.getTimeInMillis())
+                java.sql.Date currentDate = new java.sql.Date(calendar.getTimeInMillis());
+
+                while(currentDate.compareTo(thruDate)<=0) {
+                dateValue = null
+
+                dateValue = ec.entity.find("bi.DateDimension").condition("dateValue", currentDate).one()
+
+                boolean newValue = (dateValue== null)
+
+                if(newValue) {
+                dateValue = ec.entity.makeValue("bi.DateDimension")
+                dateValue.setSequencedIdPrimary()
+                dateValue.set("dateValue", new java.sql.Date(currentDate.getTime()))
+
+                }
+
+                dateValue.set("description", dayDescriptionFormat.format(currentDate));
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                dateValue.set("dayName", dayNameFormat.format(currentDate));
+                dateValue.set("dayOfMonth", Long.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+                dateValue.set("dayOfYear", Long.valueOf(calendar.get(Calendar.DAY_OF_YEAR)));
+                dateValue.set("monthName", monthNameFormat.format(currentDate));
+
+                dateValue.set("monthOfYear", Long.valueOf(calendar.get(Calendar.MONTH) + 1));
+                dateValue.set("yearName", Long.valueOf(calendar.get(Calendar.YEAR)));
+                dateValue.set("weekOfMonth", Long.valueOf(calendar.get(Calendar.WEEK_OF_MONTH)));
+                dateValue.set("weekOfYear", Long.valueOf(calendar.get(Calendar.WEEK_OF_YEAR)));
+                dateValue.set("weekdayType", (dayOfWeek == 1 || dayOfWeek == 7 ? "Weekend" : "Weekday"));
+                dateValue.set("yearMonthDay", yearMonthDayFormat.format(currentDate));
+                dateValue.set("yearAndMonth", yearMonthFormat.format(currentDate));
+
+                dateValue.createOrUpdate()
+
+                calendar.add(Calendar.DATE, 1)
+                currentDate = new java.sql.Date(calendar.getTimeInMillis())
+                }
+                return
+                ]]>
             </script>
-            <while condition="currentDate.compareTo(thruDate)" >
-                <log message="ok ${currentDate}" level="info"/>
-                <script>
-                    calendar.add(Calendar.DATE, 1)
-                    currentDate = new java.sql.Date(calendar.getTimeInMillis())
-                </script>
-            </while>
+
         </actions>
     </service>
 </services>
