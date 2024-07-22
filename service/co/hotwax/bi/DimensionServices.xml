@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-3.xsd">
     <!--    <service verb="load" type="script" noun="DateDimension" location="component://bi/src/loadDateDimension.groovy">-->
-    <service verb="load" noun="DateDimension">
+    <service verb="load" noun="DateDayDimension">
         <in-parameters>
             <parameter name="fromDate" type="Timestamp" format="yyyy-MM-dd" required="true">
                 <description>From date to generate the date dimension</description>
@@ -11,6 +11,7 @@
             </parameter>
         </in-parameters>
         <actions>
+            <set field="dateDimension" type="String" value="moqui.olap.DateDayDimension" />
             <script>
                 import java.text.SimpleDateFormat
 
@@ -28,13 +29,13 @@
                 calendar.set(Calendar.MILLISECOND, 0)
             </script>
             <set field="currentDate" type="Date" from="new java.sql.Date(calendar.getTimeInMillis())"/>
-            <while condition="currentDate.compareTo(thruDate)&lt;=0">
-                <entity-find-one entity-name="co.hotwax.bi.DateDimension" value-field="dateValue">
+            <while condition="currentDate.compareTo(thruDate) &lt;= 0">
+                <entity-find-one entity-name="${dateDimension}" value-field="dateValue">
                     <field-map field-name="dateValue" from="currentDate"/>
                 </entity-find-one>
 
                 <if condition="!dateValue">
-                    <entity-make-value entity-name="co.hotwax.bi.DateDimension" value-field="dateValue"/>
+                    <entity-make-value entity-name="${dateDimension}" value-field="dateValue"/>
                     <entity-sequenced-id-primary value-field="dateValue"/>
                     <set field="dateValue.dateValue" from="currentDate"/>
                 </if>
@@ -51,11 +52,11 @@
                 <set field="dateValue.yearName" from="Long.valueOf(calendar.get(Calendar.YEAR))" />
                 <set field="dateValue.weekOfMonth" from="Long.valueOf(calendar.get(Calendar.WEEK_OF_MONTH))" />
                 <set field="dateValue.weekOfYear" from="Long.valueOf(calendar.get(Calendar.WEEK_OF_YEAR))" />
-                <set field="dateValue.weekdayType" from="(dayOfWeek == 1 || dayOfWeek == 7 ? 'Weekend' : 'Weekday')" />
                 <set field="dateValue.yearMonthDay" from="yearMonthDayFormat.format(currentDate)" />
                 <set field="dateValue.yearAndMonth" from="yearMonthFormat.format(currentDate)" />
+                <set field="dateValue.isWeekEnd" from="(dayOfWeek == 1 || dayOfWeek == 7 ? 'Y' : 'N')" />
 
-                <service-call name="store#co.hotwax.bi.DateDimension" in-map="dateValue"/>
+                <service-call name="store#${dateDimension}" in-map="dateValue"/>
 
                 <script>calendar.add(Calendar.DATE, 1)</script>
                 <set field="currentDate" from="new java.sql.Date(calendar.getTimeInMillis())"/>

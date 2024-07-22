@@ -19,7 +19,9 @@ under the License.
 -->
 
 <entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-3.xsd">
-    <entity entity-name="DateDimension" package="co.hotwax.bi" group="data_warehouse">
+    <extend-entity entity-name="DateDayDimension" package="moqui.olap" group="analytical">
+    </extend-entity>
+    <entity entity-name="DateDimension" package="co.hotwax.bi.dimension" group="analytical">
         <description>Date Day Dimension. The natural key is [dateValue]</description>
         <field name="dimensionId" type="number-integer" is-pk="true"/>
         <field name="dateValue" type="date"/>
@@ -37,7 +39,7 @@ under the License.
         <field name="weekdayType" type="text-short"/>
     </entity>
 
-    <entity entity-name="ProductDimension" package="co.hotwax.bi" group="data_warehouse">
+    <entity entity-name="ProductDimension" package="co.hotwax.bi.dimension" group="analytical">
         <field name="productId" type="id" is-pk="true"/>
         <field name="productTypeId" type="id"/>
         <field name="parentTypeId" type="id"/>
@@ -55,7 +57,7 @@ under the License.
         <field name="variationType" type="text-short"/>
     </entity>
 
-    <entity entity-name="FacilityDimension" package="co.hotwax.bi" group="data_warehouse">
+    <entity entity-name="FacilityDimension" package="co.hotwax.bi.dimension" group="analytical">
         <field name="facilityId" type="id" is-pk="true"/>
         <field name="facilityName" type="text-medium"/>
         <field name="facilityTypeId" type="id"/>

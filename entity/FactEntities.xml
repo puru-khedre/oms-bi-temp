@@ -19,7 +19,7 @@ under the License.
 -->
 
 <entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-3.xsd">
-    <entity entity-name="OrderItemFulfillmentFact" package="co.hotwax.bi" group="data_warehouse">
+    <entity entity-name="OrderItemFulfillmentFact" package="co.hotwax.bi.fact" group="analytical">
         <field name="orderId" type="id" is-pk="true"/>
         <field name="orderItemSeqId" type="id" is-pk="true"/>
         <field name="externalId" type="text-short"/>
@@ -44,6 +44,7 @@ under the License.
         <field name="shipmentMethodTypeId" type="id"/>
         <field name="shipGroupCreatedStamp" type="date-time"/>
         <field name="facilityId" type="id"/>
+        <field name="destContactMechId" type="id"/>
         <field name="destStateProvinceGeoId" type="id"/>
         <field name="destCity" type="text-medium"/>
         <field name="destAddress1" type="text-medium"/>
@@ -61,22 +62,22 @@ under the License.
         <field name="actualCost" type="currency-amount"/>
         <field name="pickerPartyId" type="id"/>
         <field name="itemDiscPerUnit" type="currency-amount"/>
-        <relationship type="one-nofk" related="co.hotwax.bi.FacilityDimension">
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.FacilityDimension">
             <key-map field-name="facilityId"/>
         </relationship>
-        <relationship type="one-nofk" related="co.hotwax.bi.FacilityDimension">
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.FacilityDimension">
             <key-map field-name="originFacilityId" related="facilityId"/>
         </relationship>
-        <relationship type="one-nofk" related="co.hotwax.bi.FacilityDimension">
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.FacilityDimension">
             <key-map field-name="destFacilityId" related="facilityId"/>
         </relationship>
-        <relationship type="one-nofk" related="co.hotwax.bi.ProductDimension">
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.ProductDimension">
             <key-map field-name="productId"/>
         </relationship>
-        <relationship type="one-nofk" related="co.hotwax.bi.DateDimension">
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.DateDayDimension">
             <key-map field-name="itemCompletedDateDimId" related="dateValue"/>
         </relationship>
-        <relationship type="one-nofk" related="co.hotwax.bi.DateDimension">
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.DateDayDimension">
             <key-map field-name="itemCancelledDateDimId" related="dateValue"/>
         </relationship>
     </entity>

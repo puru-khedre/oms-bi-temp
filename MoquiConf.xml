@@ -9,7 +9,7 @@
 
     <entity-facade crypt-pass="${entity_ds_crypt_pass}" query-stats="true">
         <datasource
-                group-name="data_warehouse"
+                group-name="analytical"
                 database-conf-name="${bi_entity_ds_db_conf}"
                 schema-name="${entity_ds_schema}"
                 runtime-add-missing="${entity_add_missing_runtime}"
