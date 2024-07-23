@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-3.xsd">
+    <!--    <service verb="load" type="script" noun="DateDimension" location="component://bi/src/loadDateDimension.groovy">-->
+    <service verb="load" noun="DateDayDimension">
+        <in-parameters>
+            <parameter name="fromDate" type="Timestamp" format="yyyy-MM-dd" required="true">
+                <description>From date to generate the date dimension</description>
+            </parameter>
+            <parameter name="thruDate" type="Timestamp" format="yyyy-MM-dd" required="true">
+                <description>Thru date to generate the date dimension</description>
+            </parameter>
+        </in-parameters>
+        <actions>
+            <set field="dateDimension" type="String" value="moqui.olap.DateDayDimension" />
+            <script>
+                import java.text.SimpleDateFormat
+
+                SimpleDateFormat monthNameFormat = new SimpleDateFormat("MMMM")
+                SimpleDateFormat dayNameFormat = new SimpleDateFormat("EEEE")
+                SimpleDateFormat dayDescriptionFormat = new SimpleDateFormat("MMMM d, yyyy")
+                SimpleDateFormat yearMonthDayFormat = new SimpleDateFormat("yyyy-MM-dd")
+                SimpleDateFormat yearMonthFormat = new SimpleDateFormat("yyyy-MM")
+
+                calendar = Calendar.getInstance()
+                calendar.setTime(fromDate)
+                calendar.set(Calendar.HOUR, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+            </script>
+            <set field="currentDate" type="Date" from="new java.sql.Date(calendar.getTimeInMillis())"/>
+            <while condition="currentDate.compareTo(thruDate) &lt;= 0">
+                <entity-find-one entity-name="${dateDimension}" value-field="dateValue">
+                    <field-map field-name="dateValue" from="currentDate"/>
+                </entity-find-one>
+
+                <if condition="!dateValue">
+                    <entity-make-value entity-name="${dateDimension}" value-field="dateValue"/>
+                    <entity-sequenced-id-primary value-field="dateValue"/>
+                    <set field="dateValue.dateValue" from="currentDate"/>
+                </if>
+
+                <set field="dateValue.description" from="dayDescriptionFormat.format(currentDate)"/>
+                <set field="dayOfWeek" from="calendar.get(Calendar.DAY_OF_WEEK)"/>
+
+                <set field="dateValue.dayName" from="dayNameFormat.format(currentDate)"/>
+                <set field="dateValue.dayOfMonth" from="Long.valueOf(calendar.get(Calendar.DAY_OF_MONTH))"/>
+                <set field="dateValue.dayOfYear" from="Long.valueOf(calendar.get(Calendar.DAY_OF_YEAR))"/>
+                <set field="dateValue.monthName" from="monthNameFormat.format(currentDate)"/>
+
+                <set field="dateValue.monthOfYear" from="Long.valueOf(calendar.get(Calendar.MONTH) + 1)" />
+                <set field="dateValue.yearName" from="Long.valueOf(calendar.get(Calendar.YEAR))" />
+                <set field="dateValue.weekOfMonth" from="Long.valueOf(calendar.get(Calendar.WEEK_OF_MONTH))" />
+                <set field="dateValue.weekOfYear" from="Long.valueOf(calendar.get(Calendar.WEEK_OF_YEAR))" />
+                <set field="dateValue.yearMonthDay" from="yearMonthDayFormat.format(currentDate)" />
+                <set field="dateValue.yearAndMonth" from="yearMonthFormat.format(currentDate)" />
+                <set field="dateValue.isWeekEnd" from="(dayOfWeek == 1 || dayOfWeek == 7 ? 'Y' : 'N')" />
+
+                <service-call name="store#${dateDimension}" in-map="dateValue"/>
+
+                <script>calendar.add(Calendar.DATE, 1)</script>
+                <set field="currentDate" from="new java.sql.Date(calendar.getTimeInMillis())"/>
+            </while>
+
+            <return type="success" message="Date dimension entity loading is completed fromDate: ${fromDate}, thruDate: ${thruDate}" />
+        </actions>
+    </service>
+</services>

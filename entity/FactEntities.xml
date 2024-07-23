@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-3.xsd">
+    <entity entity-name="OrderItemFulfillmentFact" package="co.hotwax.bi.fact" group="analytical">
+        <field name="orderId" type="id" is-pk="true"/>
+        <field name="orderItemSeqId" type="id" is-pk="true"/>
+        <field name="externalId" type="text-short"/>
+        <field name="orderName" type="text-short"/>
+        <field name="orderTypeId" type="id"/>
+        <field name="productStoreId" type="id"/>
+        <field name="salesChannelEnumId" type="id"/>
+        <field name="entryDate" type="date-time"/>
+        <field name="orderDate" type="date-time"/>
+        <field name="shippingCharges" type="currency-amount"/>
+        <field name="productId" type="id"/>
+        <field name="itemDescription" type="text-medium"/>
+        <field name="quantity" type="number-integer"/>
+        <field name="cancelQuantity" type="number-integer"/>
+        <field name="unitPrice" type="currency-amount"/>
+        <field name="itemStatusId" type="id"/>
+        <field name="itemCompletedDate" type="date-time"/>
+        <field name="itemCompletedDateDimId" type="date"/>
+        <field name="itemCancelledDate" type="date-time"/>
+        <field name="itemCancelledDateDimId" type="date"/>
+        <field name="itemApprovedDate" type="date-time"/>
+        <field name="shipmentMethodTypeId" type="id"/>
+        <field name="shipGroupCreatedStamp" type="date-time"/>
+        <field name="facilityId" type="id"/>
+        <field name="destContactMechId" type="id"/>
+        <field name="destStateProvinceGeoId" type="id"/>
+        <field name="destCity" type="text-medium"/>
+        <field name="destAddress1" type="text-medium"/>
+        <field name="destPostalCode" type="text-short"/>
+        <field name="destLatitude" type="number-float"/>
+        <field name="destLongitude" type="number-float"/>
+        <field name="trackingIdNumber" type="text-medium"/>
+        <field name="shipmentId" type="id"/>
+        <field name="brokeredDate" type="date-time"/>
+        <field name="packedDate" type="date-time"/>
+        <field name="shippedDate" type="date-time"/>
+        <field name="originFacilityId" type="id"/>
+        <field name="destFacilityId" type="id"/>
+        <field name="actualCarrierCode" type="id"/>
+        <field name="actualCost" type="currency-amount"/>
+        <field name="pickerPartyId" type="id"/>
+        <field name="itemDiscPerUnit" type="currency-amount"/>
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.FacilityDimension">
+            <key-map field-name="facilityId"/>
+        </relationship>
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.FacilityDimension">
+            <key-map field-name="originFacilityId" related="facilityId"/>
+        </relationship>
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.FacilityDimension">
+            <key-map field-name="destFacilityId" related="facilityId"/>
+        </relationship>
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.ProductDimension">
+            <key-map field-name="productId"/>
+        </relationship>
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.DateDayDimension">
+            <key-map field-name="itemCompletedDateDimId" related="dateValue"/>
+        </relationship>
+        <relationship type="one-nofk" related="co.hotwax.bi.dimension.DateDayDimension">
+            <key-map field-name="itemCancelledDateDimId" related="dateValue"/>
+        </relationship>
+    </entity>
+</entities>
