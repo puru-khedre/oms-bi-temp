@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<entity-facade-xml type="demo">
+    <moqui.service.message.SystemMessageType
+            systemMessageTypeId="AnalyticsDataSync"
+            description="Upload the CSV file into Analytics Database"
+            consumeServiceName="co.hotwax.bi.SystemMessageServices.consume#AnalyticsDataSync"
+            receiveFilePattern=".*\.csv"
+            sendPath="${contentRoot}/DataWarehouse"
+            receiveMovePath="/home/${sftpUsername}/hotwax/DataWarehouse/archive"
+            receivePath="/home/${sftpUsername}/hotwax/DataWarehouse"
+            receiveResponseEnumId="MsgRrMove"
+    />
+
+    <moqui.service.job.ServiceJob
+            jobName="poll_SystemMessageFileSftp_AnalyticsDataSync"
+            description="poll for the Analytics Data files to SFTP location"
+            serviceName="co.hotwax.ofbiz.SystemMessageServices.poll#SystemMessageFileSftp"
+            cronExpression="0 0 0/12 * * ?" paused="Y"
+    >
+        <parameters parameterName="systemMessageTypeId" parameterValue="AnalyticsDataSync"/>
+        <parameters parameterName="systemMessageRemoteId" parameterValue="RemoteSftp"/>
+    </moqui.service.job.ServiceJob>
+
+</entity-facade-xml>
