@@ -2,9 +2,9 @@
 
 <entity-facade-xml type="demo">
     <moqui.service.message.SystemMessageType
-            systemMessageTypeId="AnalyticsDataSync"
-            description="Upload the CSV file into Analytics Database"
-            consumeServiceName="co.hotwax.bi.SystemMessageServices.consume#AnalyticsDataSync"
+            systemMessageTypeId="ReadOLAPData"
+            description="Reads the CSV file from SFTP and stores the data in entity which is defined in CSV file"
+            consumeServiceName="co.hotwax.bi.SystemMessageServices.consume#OlapDataSystemMessage"
             receiveFilePattern=".*\.csv"
             sendPath="${contentRoot}/DataWarehouse"
             receiveMovePath="/home/${sftpUsername}/hotwax/DataWarehouse/archive"
@@ -13,12 +13,12 @@
     />
 
     <moqui.service.job.ServiceJob
-            jobName="poll_SystemMessageFileSftp_AnalyticsDataSync"
-            description="poll for the Analytics Data files to SFTP location"
+            jobName="poll_SystemMessageFileSftp_ReadOLAPData"
+            description="Polls to see if there is any CSV file so that data can be stored in OLAP database"
             serviceName="co.hotwax.ofbiz.SystemMessageServices.poll#SystemMessageFileSftp"
             cronExpression="0 0 0/12 * * ?" paused="Y"
     >
-        <parameters parameterName="systemMessageTypeId" parameterValue="AnalyticsDataSync"/>
+        <parameters parameterName="systemMessageTypeId" parameterValue="ReadOLAPData"/>
         <parameters parameterName="systemMessageRemoteId" parameterValue="RemoteSftp"/>
     </moqui.service.job.ServiceJob>
 
